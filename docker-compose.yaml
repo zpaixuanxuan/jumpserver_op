@@ -1,0 +1,57 @@
+version: "2.1"
+services:
+  app:
+    image: newjumpserver:0.1
+    restart: always
+    command: /start.sh
+    volumes:
+      - .:/app
+      - static-volume:/code/collected_static
+      - /nginx_hijack/log:/nginx_hijack/log
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - web_network
+      - db_network
+  db:
+    image: newmysql:5.7
+    volumes:
+      - "./mysql:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    restart: always
+    command: "/entrypoint.sh mysqld"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: jumpserver
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 60s
+      retries: 30
+    networks:
+      - db_network
+  nginx:
+    restart: always
+    image: newnginx:latest
+    command: bash -c "/docker-entrypoint.sh && nginx -g 'daemon off;'"
+    ports:
+      - "80:80"
+    volumes:
+      - static-volume:/code/collected_static
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - web_network
+
+networks:
+  web_network:
+    driver: bridge
+  db_network:
+    driver: bridge
+
+volumes:
+  static-volume:

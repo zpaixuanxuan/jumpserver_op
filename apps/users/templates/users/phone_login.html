@@ -1,0 +1,272 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> 运维审计-奇安信 </title>
+    <link rel="shortcut icon" href="{% static "img/facio.ico" %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'img/bg.png' %}" type="image/x-icon">
+    {% include '_head_css_js.html' %}
+    <link href="{% static "css/jumpserver.css" %}" rel="stylesheet">
+    <script src="{% static "js/jumpserver.js" %}">
+    </script>
+    <style>
+        .captcha {
+            float: right;
+        }
+                *{
+            margin: 0 auto;
+        }
+        body{
+            background-color: #343a40;
+        }
+        .container{
+            position: relative;
+            top: 100px;
+        }
+        .news-nav{
+            clear: both;
+            height: 50px;
+            margin-left: 10px;
+            margin-right: 10px;
+            /*width: 300px;*/
+            margin: 0 auto;
+        }
+        .news-nav li{
+            float: left;
+            list-style-type: none;
+            margin: 0 10px;
+            font-size: 14px;
+            display: block;
+            width: 86px;
+            height: 60px;
+            text-align: center;
+            line-height: 79px;
+            font-weight: bold;
+            color: #000;
+            cursor: pointer;
+        }
+        .news-nav li.on{
+            color: #0098fc;
+            border-bottom-color: #0098fc;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+        #index-news-list-2,#index-news-list-3{
+            display: none;
+        }
+        .modal-dialog{
+            max-width: 100% !important;
+        }
+        .modal-content{
+            background:#fff;
+            width: 396px;
+            position: fixed;
+            right: 120px;
+        }
+        .loginForm{
+            width: 330px;
+        }
+        .loginForm .form-group{
+            margin: 30px 0;
+        }
+        .loginForm .form-group .form-control{
+            height: 40px;
+            font-size: 15px;
+        }
+        input[type="checkbox"]{
+            position:relative;
+            top:-2px;
+            vertical-align: middle;
+            cursor: pointer;
+            zoom:1.6;
+        }
+        input[type="radio"]{
+            position:relative;
+            top:-3px;
+            vertical-align: middle;
+            cursor: pointer;
+            zoom:1.6;
+        }
+        .btn-primary{
+            background-color: #3e4963;
+            border: 0px solid transparent;
+            width: 400px;
+            height: 50px;
+            font-size: 24px;
+            font-family: '微软雅黑';
+        }
+        label{
+            color: #fff;
+            font-size: 16px;
+        }
+        .form-control, .single-line {
+            font-size: 14px;
+        }
+        .btn.btn-primary {
+            font-size: 14px;
+        }
+        .bg {
+            width: 100%;
+            height: 100%;
+            background-image: url("/static/img/bg.png");
+            background-size: cover;
+        }
+        .form-control.identify-code {            width: 45%;
+            display: inline-block;
+        }
+        .login-footer {
+            width: 100%;
+            display: table-cell;
+            text-align: center;
+            height: 40px;
+            position: absolute;
+            bottom: 0;
+        }
+        #get_code {
+            width: 40%;
+            height: 40px;
+            float: right;
+        }
+
+    </style>
+</head>
+
+<body class="gray-bg">
+    <div class="bg">
+        <div style="float: left; position: relative; height: 100%; margin-left: 30px;"><img src="/static/img/system_login_logo.png" style="position: absolute; top: 5%; margin-top: -12px; height: 24px; width: auto;"></div>
+        <div class="container">
+        <div class="col-md-6">
+            <div style="padding-right: 20px; margin-top: 125px; margin-left: -38px;">
+                <div style="font-size: 52px; line-height: 52px; color: rgb(255, 255, 255); text-align: left;">
+                    SecFox
+                </div>
+                <div style="font-size: 26px; line-height: 26px; margin-top: 30px; color: rgb(255, 255, 255); text-align: left;">
+                    运维安全管理与审计系统
+                </div>
+            </div>
+        </div>
+        <div class="modal-dialog" id="login_form">
+
+            <div class="modal-content">
+
+                <div class="modal-title">
+                     <ul class="nav nav-tabs">
+                         <li class="">
+                             <a href="{% url 'users:login' %}" class="text-center"><i class="fa fa-cubes"></i>密码登录</a>
+                         </li>
+                         <li class="active">
+                             <a href="" class="text-center"><i class="fa fa-envelope"></i>手机短信</a>
+                         </li>
+                         <li class="">
+                             <a href="{% url 'users:dynamic-login' %}" class="text-center"><i class="fa fa-archive"></i>动态令牌</a>
+                         </li>
+                     </ul>
+                </div>
+             <div class="modal-body index-news-list" id="index-news-list-1">
+                    <form class="loginForm" id="loginForm" role="form" method="post" action="">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="phonenumber" name="{{ form.username.html_name }}" placeholder="手机号码" required="">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="phonecode" class="form-control identify-code"
+                                   name="{{ form.password.html_name }}" placeholder="请输入验证码" required="">
+                            <button type="" id="get_code" onclick="getcode(this);" class="btn btn-primary">获取验证码
+                            </button>
+                        </div>
+                        <button type="submit" class="btn btn-primary block full-width m-b">{% trans 'Login' %}</button>
+
+                    </form>
+                </div>
+            <div class="row">
+                <div class="col-md-12">
+                     {% include '_copyright.html' %}
+                </div>
+            </div>
+    </div>
+    </div>
+            </div>
+        <div class="login-footer" style="background-color: rgb(251, 251, 251); color: rgb(153, 169, 191);"><span>
+        版权所有 © 2019 网神信息技术（北京）股份有限公司，保留所有权利。
+    </span> <span style="margin-left: 18px;">
+        服务电话：4008-136-360
+    </span> <!----> <!----></div>
+    </div>
+
+<script>
+    var phonenumber;
+    var phonecode; 
+    var code;   
+    var t; 
+    var time = 60;
+    var csrftoken = getCookie('csrftoken');
+    $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+    function getcode(e) {
+        phonenumber = document.getElementById("phonenumber");
+        console.log(phonenumber.value)
+        if (phonenumber.value.length == 0) {
+            alert("请输入手机号码");
+        } else {
+            if (!(/^1[34578]\d{9}$/.test(phonenumber.value))) {
+                alert("手机号码有误，请重填")
+            } else {
+                code = 0;
+                t = setInterval(function () {
+                    countdown(e)
+                }, 1000)
+                var data = {
+                    "username": phonenumber.value,
+                    "csrfmiddlewaretoken": csrftoken
+                };
+                $.ajax({
+                    url: "{% url 'users:phone-login' %}",
+                    method: 'POST',
+                    data: data,
+                    dataType: "json",
+                    contentType:"application/x-www-form-urlencoded",
+                    success: function (data, textStatus) {
+                        window.open(data.redirect)
+                    },
+                })
+                countdown(e);
+            }
+        }
+    };
+
+    function countdown(e) {
+        if (time == 0) {
+            e.setAttribute("onclick", "getcode(this)");
+            document.getElementById("get_code").innerText = "获取验证码";
+            time = 60;
+            clearInterval(t);
+        } else {
+            e.setAttribute("onclick", '');
+            document.getElementById("get_code").innerHTML = "重新发送" + time;
+            time--;
+        }
+    }
+
+    $(document).ready(function () {
+        $(".js-nav-title li").click(function () {
+            $(this).attr("class", "on");
+            $(this).siblings().attr("class", "");
+            var index = $(".js-nav-title li").index(this);
+            $(".index-news-list").css("display", "none");
+            $("#index-news-list-" + (index + 1)).css("display", "block");
+        });
+
+    });
+</script>
+</body>
+</html>
+

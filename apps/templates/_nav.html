@@ -1,0 +1,42 @@
+{% load i18n %}
+<li id="index" style="background-color: rgb(32, 55, 92);">
+    <a href="{% url 'index' %}">
+        <i class="fa fa-dashboard" style="width: 14px"></i> <span class="nav-label">桌面</span><span
+            class="label label-info pull-right"></span>
+    </a>
+</li>
+<li id="users" style="background-color: rgb(32, 55, 92);"> 
+    <a href="#">
+        <i class="fa fa-group" style="width: 14px"></i> <span class="nav-label">运维</span><span class="fa arrow"></span>
+    </a>
+    <ul class="nav nav-second-level active">
+        <li id="operation"><a href="{% url 'users:operation' %}">主机运维</a></li>
+        <li id="appresourceops"><a href="{% url 'users:appresourceops' %}">应用运维</a></li>
+        <li id="script"><a href="{% url 'users:script' %}">脚本管理</a></li>
+        <li id="fastops"><a href="{% url 'users:fastops' %}">快速运维</a></li>
+        <li id="omtask"><a href="{% url 'users:omtask' %}">运维任务</a></li>
+        <li id="user"><a href="{% url 'users:user-list' %}">{% trans 'User list' %}</a></li>
+        {% if dt_settings.AUTH_LDAP %}
+        <li id="ldap-user"><a href="{% url 'users:ldap-user-list' %}">{% trans 'Ldap User list' %}</a></li>
+        {% endif %}
+        <li id="user-group"><a href="{% url 'users:user-group-list' %}">{% trans 'User group' %}</a></li>
+        <li id="login-log"><a href="{% url 'users:login-log-list' %}">{% trans 'Login logs' %}</a></li>
+    </ul>
+</li>
+<li id="navis" style="background-color: rgb(32, 55, 92);">
+    <a>
+        <i class="fa fa-inbox" style="width: 14px"></i> <span class="nav-label">工单</span><span class="fa arrow"></span>
+    </a>
+    <ul class="nav nav-second-level">
+        <li id="navi"><a href="{% url 'navis:navi-list' %}">{% trans 'Navi list' %}</a></li>
+    </ul>
+</li>
+<li id="perms" style="background-color: rgb(32, 55, 92);">
+    <a href="#"><i class="fa fa-edit" style="width: 14px"></i> <span class="nav-label">{% trans 'Perms' %}</span><span class="fa arrow"></span></a>
+</li>
+
+<li id="settings" style="background-color: rgb(32, 55, 92);">
+    <a href="{% url 'settings:basic-setting' %}">
+        <i class="fa fa-gears"></i> <span class="nav-label">{% trans 'Settings' %}</span><span class="label label-info pull-right"></span>
+    </a>
+</li>
